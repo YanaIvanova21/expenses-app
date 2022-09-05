@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./ExpenseForm.css";
 
-const ExpenseForm = () => {
+const ExpenseForm = (props) => {
   const [enteredTitle, setEnteredTitle] = useState("");
   const [enteredAmount, setEnteredAmount] = useState("");
   const [enteredDate, setEnteredDate] = useState("");
@@ -19,7 +19,7 @@ const ExpenseForm = () => {
   };
 
   const submitHandler = (event) => {
-    event.preventDefault(); //to prevent broser from reloading on form submission and sending HTTP rquest to the server.
+    event.preventDefault(); //to prevent browser from reloading on form submission and stop sending HTTP request to the server.
 
     const expenseData = {
       title: enteredTitle,
@@ -27,7 +27,11 @@ const ExpenseForm = () => {
       date: new Date(enteredDate), //parse the Date string and convert into a date object
     };
 
-    console.log(expenseData);
+    props.onSaveExpenseData(expenseData);
+
+    setEnteredTitle(""); //to clear form after it's submission
+    setEnteredAmount("");
+    setEnteredDate("");
   };
 
   return (
@@ -35,14 +39,19 @@ const ExpenseForm = () => {
       <div className="new-expense__controls">
         <div className="new-expense__control">
           <label>Title</label>
-          <input type="text" onChange={titleChangeHandler} />
+          <input
+            type="text"
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
         </div>
         <div className="new-expense__control">
           <label>Amount</label>
           <input
             type="number"
-            min="0.1"
-            step="0.1"
+            value={enteredAmount}
+            min="0.01"
+            step="0.01"
             onChange={amountChangeHandler}
           />
         </div>
@@ -50,6 +59,7 @@ const ExpenseForm = () => {
           <label>Date</label>
           <input
             type="date"
+            value={enteredDate}
             min="2020-01-01"
             max="2023-12-31"
             onChange={dateChangeHandler}
